@@ -16,7 +16,7 @@ RUN apt-get update -qq && \
 RUN git clone https://github.com/glample/fastBPE.git && \
     cd fastBPE && \
     g++ -std=c++11 -pthread -O3 fastBPE/main.cc -IfastBPE -o fast && \
-    pip intall Cython && \
+    pip install Cython && \
     python setup.py install
 
 WORKDIR /tf
@@ -24,6 +24,8 @@ WORKDIR /tf
 # clone CTRL and download the models
 RUN git clone https://github.com/salesforce/ctrl.git && \
     cd ctrl && \
+    patch -b /usr/local/lib/python2.7/dist-packages/tensorflow_estimator/python/estimator/keras.py estimator.patch && \
     pip install gsutil && \
-    gsutil -m cp -r 
+    gsutil -m cp -r gs://sf-ctrl/seqlen256_v1.ckpt/ .
 
+WORKDIR /tf
